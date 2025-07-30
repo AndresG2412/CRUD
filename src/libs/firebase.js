@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
+
+//importaciones para gestionar usuarios
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+
+//importaciones para la base de datos
+import { getFirestore, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,11 +15,22 @@ const firebaseConfig = {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-const db = initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 export {
+    // Firebase app
     db,
+    auth,
+    // Firebase authentication functions
     getAuth,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword,
+    // Firestore database functions
+    doc,
+    setDoc,
+    getDoc,
+    getDocs
 };

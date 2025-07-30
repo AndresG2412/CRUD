@@ -11,9 +11,12 @@ import { useState } from 'react';
 // 5. le asignamos al boton su tipo "submit" 
 // 6. al formulario le asignamos la funcion "verificacion" para que se ejecute al hacer click en el boton
 
+//importaciones de firebase
+import { auth, db } from '@/libs/firebase';
 //importaciones para reistrar usuario, documentacion: https://firebase.google.com/docs/auth/web/password-auth?hl=es-419#web
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { db } from '@/libs/firebase';
+//importaciones para la base de datos, documentacion: https://firebase.google.com/docs/firestore/quickstart?hl=es-419#web
+import { doc, setDoc } from "firebase/firestore";
 
 export default function page() {
 
@@ -24,6 +27,7 @@ export default function page() {
         correo: "",
         contraseña: "",
     });
+    const [errorMsg, setErrorMsg] = useState("");
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,16 +42,33 @@ export default function page() {
         console.log('Datos del formulario:', data);
 
         createUserWithEmailAndPassword(auth, data.correo, data.contraseña)
-            .then((userCredential) => {
+            .then(async (userCredential) => {
                 const user = userCredential.user;
                 console.log('Usuario registrado:', user);
+
+                // Guardamos en Firestore bajo la colección "users" con el uid como id del documento
+                await setDoc(doc(db, "users", user.uid), {
+                    nombre: data.nombre,
+                    correo: data.correo,
+                    creadoEn: new Date(),
+                });
+
                 alert('Usuario registrado exitosamente');
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.error('Error al registrar usuario:', errorCode, errorMessage);
-                alert('Error al registrar usuario: ' + errorMessage);
+
+                if (errorCode === "auth/email-already-in-use") {
+                    setErrorMsg("Este correo ya está registrado. Intenta iniciar sesión o usar otro.");
+                } else if (errorCode === "auth/invalid-email") {
+                    setErrorMsg("El correo no es válido.");
+                } else if (errorCode === "auth/weak-password") {
+                    setErrorMsg("La contraseña debe tener al menos 6 caracteres.");
+                } else {
+                    setErrorMsg("Ocurrió un error inesperado. Intenta nuevamente.");
+                }
             });
     };
 
@@ -73,6 +94,10 @@ export default function page() {
                 <button type="submit" className='hover:bg-blue-700 transition-all duration-300 rounded font-semibold tracking-wider text-xl py-2 bg-blue-500 uppercase w-2/3 mx-auto'>
                     Registrar
                 </button>
+
+                {errorMsg && (
+                    <p className='text-red-400 text-center text-sm font-semibold'>{errorMsg}</p>
+                )}
 
                 <div className='flex flex-col gap-2 text-center mt-4'>
                     <p className='font-semibold tracking-wide text-lg hover:text-red-500'><a href="../">¿Ya tienes una cuenta?</a></p>

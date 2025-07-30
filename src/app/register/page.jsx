@@ -17,6 +17,8 @@ import { db } from '@/libs/firebase';
 
 export default function page() {
 
+    const auth = getAuth();
+
     const [data, setData] = useState({
         nombre: "",
         correo: "",
@@ -34,6 +36,19 @@ export default function page() {
     const verificacion = (e) => {
         e.preventDefault(); // evita que recargue la página
         console.log('Datos del formulario:', data);
+
+        createUserWithEmailAndPassword(auth, data.correo, data.contraseña)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('Usuario registrado:', user);
+                alert('Usuario registrado exitosamente');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error('Error al registrar usuario:', errorCode, errorMessage);
+                alert('Error al registrar usuario: ' + errorMessage);
+            });
     };
 
     return (

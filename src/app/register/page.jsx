@@ -101,7 +101,6 @@ export default function page() {
 
                 <div className='flex flex-col gap-2 text-center mt-4'>
                     <p className='font-semibold tracking-wide text-lg hover:text-red-500'><a href="../">¿Ya tienes una cuenta?</a></p>
-                    <p className='font-semibold tracking-wide text-lg hover:text-green-500'><a href="../update">¿No recuerdas tu contraseña?</a></p>
                 </div>
             </form>
         </div>

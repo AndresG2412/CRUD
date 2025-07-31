@@ -1,5 +1,8 @@
 "use client";
 
+// el update que es para actualizar la contraseña del usuario solo se puede hacer si el usuario ya esta registrado, 
+// o un admin manualmente deberia actualizar la contraseña de un usuario en firebase
+
 import React from 'react'
 
 import { useState } from 'react';

@@ -1,5 +1,8 @@
 "use client";
 
+// el delete que es para eliminar la cuenta del usuario solo se puede hacer un admin 
+// manualmente deberia actualizar la contraseña de un usuario en firebase
+
 import React from 'react'
 
 import { useState } from 'react';
